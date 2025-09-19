@@ -6,9 +6,9 @@ const Home: React.FC = () => {
   return (
     <div className="home-container">
       <SEOHead
-        title="TheHub JA - Your Local Marketplace"
+        title="Jeffery Flowers Supplies - Bringing plants to plant lovers"
         description="Discover local businesses and products in Jamaica"
-        keywords="jamaica, marketplace, local business, products, services"
+        keywords="jamaica,Jeffery Flowers, local business, plants, services"
       />
       <main className="main-content">
         <h1>Welcome to TheHub JA</h1>

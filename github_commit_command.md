@@ -1,1 +1,1 @@
-git add . && git commit -m "update app info" && git push 
+git add . && git commit -m "update app name info" && git push 

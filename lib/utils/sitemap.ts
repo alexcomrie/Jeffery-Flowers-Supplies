@@ -15,7 +15,7 @@ export interface SitemapURL {
  * Generate sitemap URLs for static pages
  */
 export function generateStaticPageUrls(): SitemapURL[] {
-  const baseUrl = 'https://the-hubja.netlify.app';
+  const baseUrl = 'https://jeffery-flowers.netlify.app';
   
   return [
     {
@@ -37,7 +37,7 @@ export function generateStaticPageUrls(): SitemapURL[] {
  * Generate sitemap URLs for category pages
  */
 export function generateCategoryUrls(businesses: Business[]): SitemapURL[] {
-  const baseUrl = 'https://the-hubja.netlify.app';
+  const baseUrl = 'https://jeffery-flowers.netlify.app';
   const categories = Array.from(new Set(businesses.map(b => b.category).filter(Boolean)));
   
   return categories.map(category => ({
@@ -52,7 +52,7 @@ export function generateCategoryUrls(businesses: Business[]): SitemapURL[] {
  * Generate sitemap URLs for business pages
  */
 export function generateBusinessUrls(businesses: Business[]): SitemapURL[] {
-  const baseUrl = 'https://the-hubja.netlify.app';
+  const baseUrl = 'https://jeffery-flowers.netlify.app';
   
   return businesses.map(business => {
     const slug = business.slug || business.id;
@@ -69,7 +69,7 @@ export function generateBusinessUrls(businesses: Business[]): SitemapURL[] {
  * Generate sitemap URLs for product pages
  */
 export function generateProductUrls(businesses: Business[], productsMap: Map<string, Product[]>): SitemapURL[] {
-  const baseUrl = 'https://the-hubja.netlify.app';
+  const baseUrl = 'https://jeffery-flowers.netlify.app';
   const urls: SitemapURL[] = [];
   
   for (const business of businesses) {
