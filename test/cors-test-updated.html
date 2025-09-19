@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Test</title>
+</head>
+<body>
+  <h1>CORS Test</h1>
+  <button id="testButton">Test API Connection</button>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('testButton').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Testing connection...';
+      
+      try {
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbzNGkSKwCI4UA5FvSmBpSlaEP3oszhGn5akbcfO8GIxJoiD9gyTJJA-TE3YzH0aG78S/exec';
+        const params = new URLSearchParams({
+          action: 'getVotes',
+          businessId: 'test-business',
+          username: 'test-user'
+        });
+
+        const response = await fetch(`${apiUrl}?${params}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `<p>Success! Response received:</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (error) {
+        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error('Test failed:', error);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Business } from "@shared/schema";
+import { useLocation } from "wouter";
+import { Store, RefreshCw } from "lucide-react";
+import { useCart } from "@/providers/cart-provider";
+import ImageViewer from "./image-viewer";
+import { isBusinessOpen } from "@/lib/utils";
+import { BusinessReviewCounter } from "./business-review-counter";
+import { BusinessVoteCounter } from "./business-vote-counter";
+
+interface BusinessCardProps {
+  business: Business;
+  onRefresh?: () => void;
+  lastRefreshTime?: number;
+  isRefreshing?: boolean;
+}
+
+export default function BusinessCard({ business, onRefresh, lastRefreshTime = Date.now(), isRefreshing = false }: BusinessCardProps) {
+  const [, setLocation] = useLocation();
+  const [imageError, setImageError] = useState(false);
+  const { selectedBusiness, clearCart } = useCart();
+  const status = business.status.toLowerCase();
+  const isOpen = status === 'active' && isBusinessOpen(business.operationHours);
+
+  const handleClick = () => {
+    // For coming soon businesses, only allow profile view
+    if (status === 'coming_soon') {
+      setLocation(`/business/${business.id}`);
+      return;
+    }
+
+    // Clear cart if switching to a different business
+    if (selectedBusiness && selectedBusiness.id !== business.id) {
+      clearCart();
+    }
+    setLocation(`/business/${business.id}/products`);
+  };
+
+  return (
+    <Card 
+      className="overflow-hidden cursor-pointer transition-transform hover:scale-105"
+      onClick={handleClick}
+    >
+      <div className="relative h-48 overflow-hidden">
+        {business.profilePictureUrl ? (
+          <div className="relative w-full h-full">
+            <ImageViewer
+              imageUrl={business.profilePictureUrl}
+              alt={business.name}
+              className="h-full"
+              onError={() => setImageError(true)}
+              refreshKey={lastRefreshTime}
+              enableZoom={true}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (selectedBusiness && selectedBusiness.id !== business.id) {
+                  clearCart();
+                }
+                setLocation(`/business/${business.id}`);
+              }}
+            />
+            {onRefresh && (
+              <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/20"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImageError(false);
+                    onRefresh();
+                  }}
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            {imageError ? (
+              <div className="text-center">
+                <Store className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-xs text-gray-500">Image failed to load</p>
+              </div>
+            ) : (
+              <Store className="w-12 h-12 text-gray-400" />
+            )}
+          </div>
+        )}
+      </div>
+      <CardHeader className="pb-2">
+        <div>
+          <h3 className="text-lg font-semibold">{business.name}</h3>
+          <p className="text-sm text-gray-600">Owner: {business.ownerName}</p>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-gray-600 line-clamp-2">{business.bio}</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {business.hasDelivery && (
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+              Delivery Available
+            </span>
+          )}
+          {status === 'active' && (
+            <span className={`text-xs px-2 py-1 rounded-full ${isOpen ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}>
+              {isOpen ? 'Open Now' : 'Closed'}
+            </span>
+          )}
+          {status === 'coming_soon' && (
+            <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">
+              Coming Soon
+            </span>
+          )}
+        </div>
+        
+        {/* Business Review and Vote Counters */}
+        <div className="mt-4 mb-4 flex items-center justify-between">
+          <BusinessReviewCounter businessId={business.id} />
+          <BusinessVoteCounter businessId={business.id} />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (selectedBusiness && selectedBusiness.id !== business.id) {
+                clearCart();
+              }
+              setLocation(`/business/${business.id}`);
+            }}
+            className="flex-1"
+          >
+            View Profile
+          </Button>
+          {status !== 'coming_soon' && (
+            <Button 
+              variant="default" 
+              size="sm" 
+              onClick={handleClick}
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
+              View Products
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

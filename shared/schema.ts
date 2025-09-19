@@ -1,0 +1,119 @@
+import { z } from "zod";
+
+// Business Schema - matching the Dart Business model exactly
+export const BusinessSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  ownerName: z.string(),
+  address: z.string(),
+  phoneNumber: z.string(),
+  whatsAppNumber: z.string(),
+  emailAddress: z.string(),
+  hasDelivery: z.boolean(),
+  deliveryArea: z.string(),
+  operationHours: z.string().regex(/^\d{1,2}:\d{2} [AP]M - \d{1,2}:\d{2} [AP]M$/, {
+    message: "Operation hours must be in format '8:00 AM - 9:30 PM'"
+  }),
+  specialHours: z.string(),
+  profilePictureUrl: z.string(),
+  productSheetUrl: z.string(),
+  status: z.string(),
+  bio: z.string(),
+  mapLocation: z.string(),
+  deliveryCost: z.number().nullable(),
+  islandWideDelivery: z.string(),
+  islandWideDeliveryCost: z.number().nullable(),
+  category: z.string().optional(), // New field for category
+  profileType: z.enum(['product_sales', 'product_listing', 'product_inquiry']).default('product_sales'), // New field for profile type
+  // SEO fields
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  keywords: z.array(z.string()).optional(),
+  canonicalUrl: z.string().optional(),
+  slug: z.string().optional()
+});
+
+// Category Schema for the new category feature
+export const CategorySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  icon: z.string(), // SVG icon path
+  description: z.string().optional(),
+  subcategories: z.array(z.string()).optional()
+});
+
+// Product Schema - matching the Dart Product model exactly
+export const ProductSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.string(),
+  price: z.number(),
+  description: z.string(),
+  imageUrl: z.string(),
+  additionalImageUrls: z.array(z.string()).optional(),
+  inStock: z.boolean()
+});
+
+// Cart Item Schema - matching the Dart CartProvider structure
+export const CartItemSchema = z.object({
+  product: ProductSchema,
+  quantity: z.number(),
+  business: BusinessSchema
+});
+
+// Cart Schema - matching the Dart CartProvider structure
+export const CartSchema = z.object({
+  orders: z.array(CartItemSchema),
+  customerName: z.string(),
+  deliveryOption: z.enum(['pickup', 'delivery', 'island_wide', 'inquiry']),
+  deliveryAddress: z.string(),
+  pickupTime: z.string(),
+  inquiryMessage: z.string().optional(),
+  selectedBusiness: BusinessSchema.nullable()
+});
+
+export const UserSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  password: z.string(),
+});
+
+export const InsertUserSchema = UserSchema.omit({ id: true });
+
+// Username Schema for the Review & Rating system
+export const UsernameSchema = z.object({
+  username: z.string().min(3).max(30),
+  createdAt: z.number(), // timestamp
+  lastUpdatedAt: z.number(), // timestamp
+});
+
+// Business Vote Schema for the Review & Rating system
+export const BusinessVoteSchema = z.object({
+  businessId: z.string(),
+  username: z.string(),
+  vote: z.enum(['like', 'dislike']),
+  timestamp: z.number(),
+});
+
+// Product Review Schema for the Review & Rating system
+export const ProductReviewSchema = z.object({
+  id: z.string(),
+  productId: z.string(),
+  businessId: z.string(),
+  username: z.string(),
+  rating: z.number().min(1).max(5),
+  comment: z.string().max(500),
+  createdAt: z.number(),
+  timestamp: z.number(),
+});
+
+export type Business = z.infer<typeof BusinessSchema>;
+export type Product = z.infer<typeof ProductSchema>;
+export type CartItem = z.infer<typeof CartItemSchema>;
+export type Cart = z.infer<typeof CartSchema>;
+export type User = z.infer<typeof UserSchema>;
+export type InsertUser = z.infer<typeof InsertUserSchema>;
+export type Category = z.infer<typeof CategorySchema>;
+export type Username = z.infer<typeof UsernameSchema>;
+export type BusinessVote = z.infer<typeof BusinessVoteSchema>;
+export type ProductReview = z.infer<typeof ProductReviewSchema>;

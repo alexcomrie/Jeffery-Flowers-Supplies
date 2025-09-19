@@ -1,0 +1,7 @@
+reviews are being submitted and the google sheet are being updated but when a review and rating is submitted on a product, that product screen goes blank, 
+
+so i want to add an update, in the reviews Sheet i want to also add "business ID" column, so that if a business have the same product as another business, only that busiess product review will be loaded, so i want you to update Review&Ratings_script.md to now use business ID, and also update the appropriate codes to reflect the changes,
+
+
+
+now that you understand the the implimentation, in the vote sheet, and both reviews sheet, and businessreviews sheet i want to add Ip address column, this will be use to restrict a user to only 1 like or dislike per business, but not both, and use to restrict a user to only 5 reviews per business per day. the review system will maintain all its current implimentations. without changing any of the current implimentation, i want you to update the codes in Review&Ratings_script.md to now use the ip address column, and also update the appropriate codes to reflect the changes. in addition i want the review system to follow the exact implimentation for both the frontend and the google app script as in 
