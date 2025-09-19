@@ -1,1 +1,1 @@
-git add . && git commit -m "update browser title" && git push 
+git add . && git commit -m "update app info" && git push 
