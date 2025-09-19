@@ -1,1 +1,1 @@
-git add . && git commit -m "Add New business type Product Inquiry" && git push 
+git add . && git commit -m "update settings page" && git push 

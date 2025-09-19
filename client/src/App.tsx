@@ -24,7 +24,8 @@ import CategoryBusinesses from "@/pages/category-businesses";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={CategoryList} />
+      <Route path="/" component={BusinessList} />
+      {/* Category routes kept for backward compatibility */}
       <Route path="/category/:categoryId" component={CategoryBusinesses} />
       <Route path="/all-businesses" component={BusinessList} />
       <Route path="/business/:id" component={BusinessProfile} />
